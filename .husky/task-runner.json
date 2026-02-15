@@ -1,9 +1,21 @@
 {
-  "hooks": {
-    "pre-commit": [
-      "dotnet format --verify-no-changes",
-      "dotnet build",
-      "dotnet test"
-    ]
-  }
+  "$schema": "https://alirezanet.github.io/Husky.Net/schema.json",
+  "tasks": [
+    {
+      "name": "pre-commit-dotnet",
+      "command": "bash",
+      "args": [
+        "-c",
+        "dotnet format URL_Shortener_Backend.sln --verify-no-changes && dotnet build URL_Shortener_Backend.sln && dotnet test URL_Shortener_Backend.sln"
+      ],
+      "windows": {
+        "command": "cmd",
+        "args": [
+          "/c",
+          "dotnet format URL_Shortener_Backend.sln --verify-no-changes && dotnet build URL_Shortener_Backend.sln && dotnet test URL_Shortener_Backend.sln"
+        ]
+      },
+      "hook": "pre-commit"
+    }
+  ]
 }
