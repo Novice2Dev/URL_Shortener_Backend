@@ -6,13 +6,13 @@
       "command": "bash",
       "args": [
         "-c",
-        "dotnet format URL_Shortener_Backend.sln --verify-no-changes && dotnet build URL_Shortener_Backend.sln && dotnet test URL_Shortener_Backend.sln"
+        "dotnet format --verify-no-changes && dotnet build && dotnet test"
       ],
       "windows": {
         "command": "cmd",
         "args": [
           "/c",
-          "dotnet format URL_Shortener_Backend.sln --verify-no-changes && dotnet build URL_Shortener_Backend.sln && dotnet test URL_Shortener_Backend.sln"
+          "dotnet format --verify-no-changes && dotnet build && dotnet test"
         ]
       },
       "hook": "pre-commit"
