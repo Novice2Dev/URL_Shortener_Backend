@@ -46,7 +46,7 @@ jobs:
           dotnet-version: "10.0.x"
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
           languages: csharp
 
@@ -56,7 +56,7 @@ jobs:
           dotnet build --configuration Release --no-incremental --nologo
 
       - name: Run CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3
 
       - name: Check for vulnerable NuGet packages
         run: dotnet list package --vulnerable
