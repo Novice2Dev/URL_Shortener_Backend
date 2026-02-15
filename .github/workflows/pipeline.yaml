@@ -1,4 +1,4 @@
-name: .NET 10 CI
+name: URL Shortener CI/CD Pipeline
 
 on:
   push:
@@ -9,24 +9,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2️⃣ Setup .NET 10 SDK
       - name: Setup .NET 10
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 10.0.x
 
-      # 3️⃣ Restore dependencies
       - name: Restore dependencies
         run: dotnet restore
 
-      # 4️⃣ Build solution
+      - name: Install dotnet-format
+        run: dotnet tool install -g dotnet-format
+
+      - name: Run formatter
+        run: dotnet format --verify-no-changes
+
       - name: Build
         run: dotnet build --no-restore --configuration Release
 
-      # 5️⃣ Run tests
-      - name: Test
+      - name: Unit Tests
         run: dotnet test --no-build --verbosity normal
