@@ -1,21 +1,14 @@
 {
-  "$schema": "https://alirezanet.github.io/Husky.Net/schema.json",
-  "tasks": [
-    {
-      "name": "pre-commit-dotnet",
-      "command": "bash",
-      "args": [
-        "-c",
-        "dotnet format --verify-no-changes && dotnet build && dotnet test"
-      ],
-      "windows": {
-        "command": "cmd",
-        "args": [
-          "/c",
-          "dotnet format --verify-no-changes && dotnet build && dotnet test"
-        ]
-      },
-      "hook": "pre-commit"
-    }
-  ]
+   "$schema": "https://alirezanet.github.io/Husky.Net/schema.json",
+   "tasks": [
+      {
+         "name": "welcome-message-example",
+         "command": "bash",
+         "args": [ "-c", "echo Husky.Net is awesome!" ],
+         "windows": {
+            "command": "cmd",
+            "args": ["/c", "echo Husky.Net is awesome!" ]
+         }
+      }
+   ]
 }
