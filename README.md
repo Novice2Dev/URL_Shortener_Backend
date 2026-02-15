@@ -1,6 +1,6 @@
 # URL Shortener Backend
 
-A powerful and efficient URL shortening service backend built with .NET 10.
+A powerful and efficient URL shortening service backend built with .NET 10
 
 ---
 

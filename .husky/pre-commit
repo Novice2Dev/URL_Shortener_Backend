@@ -1,0 +1,55 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+## husky task runner examples -------------------
+## Note : for local installation use 'dotnet' prefix. e.g. 'dotnet husky'
+
+## run all tasks
+#husky run
+
+### run all tasks with group: 'group-name'
+#husky run --group group-name
+
+## run task with name: 'task-name'
+#husky run --name task-name
+
+## pass hook arguments to task
+#husky run --args "$1" "$2"
+
+## or put your custom commands -------------------
+#echo 'Husky.Net is awesome!'
+
+echo 'Running pre-commit tasks...'
+echo '-----------------------------'
+
+# 1. Format
+echo '1. Running code formatter...'
+if dotnet format --verify-no-changes >/dev/null 2>&1; then
+    echo '✅ Code is properly formatted.'
+else
+    dotnet format --verify-no-changes
+    echo '❌ Code formatting issues found. Please fix them before committing.'
+    exit 1
+fi
+
+# 2. Build
+echo '2. Building solution...'
+if dotnet build >/dev/null 2>&1; then
+    echo '✅ Build succeeded.'
+else
+    dotnet build
+    echo '❌ Build failed. Please fix the issues before committing.'
+    exit 1
+fi
+
+# 3. Test
+echo '3. Running unit tests...'
+if dotnet test --no-build --verbosity normal >/dev/null 2>&1; then
+    echo '✅ All tests passed.'
+else
+    dotnet test --no-build --verbosity normal
+    echo '❌ Some tests failed. Please fix the issues before committing.'
+    exit 1
+fi
+
+echo 'Pre-commit tasks completed successfully!'
