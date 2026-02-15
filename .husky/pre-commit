@@ -22,8 +22,9 @@
 echo 'Running pre-commit tasks...'
 echo '-----------------------------'
 echo '1. Running code formatter...'
-dotnet format --verify-no-changes
+dotnet format --verify-no-changes >> /dev/null
 echo '2. Building solution...'
-dotnet build
+dotnet build >> /dev/null
 echo '3. Running unit tests...'
-dotnet test
+dotnet test --no-build --verbosity normal
+echo 'Pre-commit tasks completed successfully!'
