@@ -1,0 +1,9 @@
+{
+  "hooks": {
+    "pre-commit": [
+      "dotnet format --verify-no-changes",
+      "dotnet build",
+      "dotnet test"
+    ]
+  }
+}
