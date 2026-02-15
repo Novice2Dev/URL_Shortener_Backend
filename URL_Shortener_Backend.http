@@ -1,6 +1,0 @@
-@URL_Shortener_Backend_HostAddress = http://localhost:5157
-
-GET {{URL_Shortener_Backend_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
