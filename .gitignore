@@ -6,6 +6,10 @@
 # dotenv files
 .env
 
+# Build folders
+bin/
+obj/
+
 # User-specific files
 *.rsuser
 *.suo
@@ -73,6 +77,7 @@ ScaffoldingReadMe.txt
 
 # StyleCop
 StyleCopReport.xml
+
 
 # Files built by Visual Studio
 *_i.c
