@@ -32,8 +32,11 @@ jobs:
       - name: Build
         run: dotnet build --no-restore --configuration Release
 
-      - name: List build output
-        run: ls -la bin/Release/
+      - name: List bin directory
+        run: ls -la bin/ || echo "bin directory does not exist"
+
+      - name: Check build success
+        run: dotnet build --no-restore --configuration Release --verbosity normal
 
       - name: Unit Tests
         run: dotnet test --no-build --verbosity normal
