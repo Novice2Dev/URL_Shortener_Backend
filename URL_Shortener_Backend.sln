@@ -5,7 +5,7 @@ VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{D82C56D6-B2CD-F611-9E31-04638F7EC30E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "URL_Shortener_Backend", "API\URL_Shortener_Backend.csproj", "{218D2958-3DB0-454D-B4CD-948DC4EAE843}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "URL_Shortener_Backend", "src\API\URL_Shortener_Backend.csproj", "{218D2958-3DB0-454D-B4CD-948DC4EAE843}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
