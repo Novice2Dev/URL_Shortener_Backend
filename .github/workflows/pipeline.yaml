@@ -39,9 +39,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
-          path: |
-            bin/Release/
-            obj/
+          path: bin/Release/net10.0/
           retention-days: 1
 
   security:
@@ -60,9 +58,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-artifacts
-
-      - name: Restore dependencies
-        run: dotnet restore
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
