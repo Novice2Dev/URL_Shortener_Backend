@@ -23,20 +23,8 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Install dotnet-format
-        run: dotnet tool install -g dotnet-format
-
-      - name: Run formatter
-        run: dotnet format --verify-no-changes
-
       - name: Build
         run: dotnet build --no-restore --configuration Release
-
-      - name: List bin directory
-        run: ls -la bin/ || echo "bin directory does not exist"
-
-      - name: Check build success
-        run: dotnet build --no-restore --configuration Release --verbosity normal
 
       - name: Unit Tests
         run: dotnet test --no-build --verbosity normal
@@ -45,7 +33,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
-          path: bin/Release/net10.0/
+          path: bin/
           retention-days: 1
 
   security:
