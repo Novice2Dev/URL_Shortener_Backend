@@ -24,10 +24,7 @@ jobs:
         run: dotnet restore
 
       - name: Build
-        run: dotnet build --configuration Release --verbosity detailed
-
-      - name: Check build output
-        run: find . -type d -name "bin" -o -type d -name "Release"
+        run: dotnet build --configuration Release
 
       - name: Unit Tests
         run: dotnet test --no-build --verbosity normal
@@ -36,7 +33,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
-          path: bin/
+          path: src/API/bin/Release/
           retention-days: 1
 
   security:
