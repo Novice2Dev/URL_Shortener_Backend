@@ -24,7 +24,10 @@ jobs:
         run: dotnet restore
 
       - name: Build
-        run: dotnet build --no-restore --configuration Release
+        run: dotnet build --configuration Release --verbosity detailed
+
+      - name: Check build output
+        run: find . -type d -name "bin" -o -type d -name "Release"
 
       - name: Unit Tests
         run: dotnet test --no-build --verbosity normal
