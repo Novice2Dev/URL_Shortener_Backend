@@ -1,4 +1,16 @@
+using Microsoft.EntityFrameworkCore;
+using URLShortener.Data;
+using DotNetEnv;
+
 var builder = WebApplication.CreateBuilder(args);
+
+var envPath = Path.Combine("..", "..", ".env");
+Env.Load(envPath);
+
+var connectionString = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION");
+builder.Services.AddDbContext<AppDbContext>(
+    options =>
+        options.UseNpgsql(connectionString));
 
 builder.Services.AddControllers();
 builder.Services.AddHealthChecks();
