@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using URLShortener.Data;
 using DotNetEnv;
+using URLShortener.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ builder.Services.AddControllers();
 builder.Services.AddHealthChecks();
 builder.Services.AddEndpointsApiExplorer(); // Required for Swagger
 builder.Services.AddSwaggerGen();           // Now recognized
+builder.Services.AddScoped<IUrlService, UrlService>();
 
 var app = builder.Build();
 
