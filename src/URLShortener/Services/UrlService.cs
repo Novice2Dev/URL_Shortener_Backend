@@ -1,4 +1,6 @@
 using URLShortener.Data;
+using URLShortener.Helpers;
+using URLShortener.Models;
 
 namespace URLShortener.Services
 {
@@ -13,24 +15,31 @@ namespace URLShortener.Services
 
         public async Task<string> createShortUrl(string originalURL)
         {
-            return "";
+            if (string.IsNullOrEmpty(originalURL))
+            {
+                throw new ArgumentException("Original URL cannot be null or empty.");
+            }
+            if (!Uri.IsWellFormedUriString(originalURL, UriKind.Absolute))
+            {
+                throw new ArgumentException("Invalid URL format.");
+            }
+            var shortCode = ShortCodeGenerator.GenerateShortCode();
+
+            var urlMapping = new UrlMapping
+            {
+                OriginalUrl = originalURL,
+                ShortCode = shortCode
+            };
+
+            _context.UrlMappings.Add(urlMapping);
+            await _context.SaveChangesAsync();
+
+            return shortCode;
         }
 
         public async Task<string> getOriginalUrl(string code)
         {
             return "";
-        }
-
-        public string generateShortCode()
-        {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            do
-            {
-                var shortCode = new string(Enumerable.Repeat(chars, 6)
-                  .Select(s => s[new Random().Next(s.Length)]).ToArray());
-                if (!_context.UrlMappings.Any(m => m.ShortCode == shortCode))
-                    return shortCode;
-            } while (true);
         }
     }
 }

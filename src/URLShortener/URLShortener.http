@@ -1,0 +1,6 @@
+@example_HostAddress = http://localhost:5157
+
+GET @example_HostAddress/api/shorten?url=https://www.example.com
+Accept: application/json
+
+###
