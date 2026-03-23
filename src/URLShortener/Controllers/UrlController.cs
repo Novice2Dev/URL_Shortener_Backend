@@ -5,7 +5,7 @@ using URLShortener.DTO;
 namespace URLShortener.Controllers
 {
     [ApiController]
-    [Route("api/shorten")]
+    [Route("")]
     public class UrlController : ControllerBase
     {
         private readonly IUrlService _urlService;
@@ -15,7 +15,7 @@ namespace URLShortener.Controllers
             _urlService = urlService;
         }
 
-        [HttpPost]
+        [HttpPost("api/shorten")]
         public async Task<ActionResult<ShortUrlResponseDto>> Create(
         CreateShortUrlRequestDto request)
         {
@@ -33,5 +33,20 @@ namespace URLShortener.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("{shortCode}")]
+        public async Task<IActionResult> RedirectToOriginalUrl(string shortCode)
+        {
+            try
+            {
+                var originalUrl = await _urlService.getOriginalUrl(shortCode);
+                return Redirect(originalUrl);
+            }
+            catch (ArgumentException)
+            {
+                return NotFound();
+            }
+        }
+
     }
 }
