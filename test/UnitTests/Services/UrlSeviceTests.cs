@@ -50,5 +50,34 @@ namespace test.UnitTests.Services
             string nullUrl = null;
             await Assert.ThrowsAsync<ArgumentException>(() => _urlService.createShortUrl(nullUrl));
         }
+
+        [Fact]
+        public async Task GetOriginalUrl_ShouldReturnOriginalUrl()
+        {
+            var originalUrl = "https://www.example.com";
+            var shortCode = await _urlService.createShortUrl(originalUrl);
+            var retrievedUrl = await _urlService.getOriginalUrl(shortCode);
+            Assert.Equal(originalUrl, retrievedUrl);
+        }
+
+        [Fact]
+        public async Task GetOriginalUrl_ShouldIncrementClickCount()
+        {
+            var originalUrl = "https://www.example.com";
+            var shortCode = await _urlService.createShortUrl(originalUrl);
+            var urlMapping = await _context.UrlMappings.FirstOrDefaultAsync(m => m.ShortCode == shortCode);
+            var initialClickCount = urlMapping.ClickCount;
+            await _urlService.getOriginalUrl(shortCode);
+            var updatedClickCount = urlMapping.ClickCount;
+            Assert.Equal(initialClickCount + 1, updatedClickCount);
+        }
+
+        [Fact]
+        public async Task GetOriginalUrl_ShouldThrowArgumentException_ForNonExistentShortCode()
+        {
+            var nonExistentShortCode = "abcdef";
+            await Assert.ThrowsAsync<ArgumentException>(() => _urlService.getOriginalUrl(nonExistentShortCode));
+
+        }
     }
 }

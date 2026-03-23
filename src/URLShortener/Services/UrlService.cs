@@ -1,6 +1,7 @@
 using URLShortener.Data;
 using URLShortener.Helpers;
 using URLShortener.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace URLShortener.Services
 {
@@ -28,7 +29,9 @@ namespace URLShortener.Services
             var urlMapping = new UrlMapping
             {
                 OriginalUrl = originalURL,
-                ShortCode = shortCode
+                ShortCode = shortCode,
+                ClickCount = 0,
+                CreatedAt = DateTime.UtcNow
             };
 
             _context.UrlMappings.Add(urlMapping);
@@ -39,7 +42,12 @@ namespace URLShortener.Services
 
         public async Task<string> getOriginalUrl(string code)
         {
-            return "";
+            var urlMapping = await _context.UrlMappings
+                .FirstOrDefaultAsync(m => m.ShortCode == code) ?? throw new ArgumentException("Short code not found.");
+
+            urlMapping.ClickCount++;
+            await _context.SaveChangesAsync();
+            return urlMapping.OriginalUrl;
         }
     }
 }

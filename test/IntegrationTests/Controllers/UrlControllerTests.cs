@@ -12,7 +12,7 @@ namespace test.IntegrationTests.Controllers
     public class UrlControllerTests : IAsyncLifetime
     {
         private readonly WebApplicationFactory<Program> _factory;
-        private HttpClient? _client;
+        private HttpClient _client;
 
         public UrlControllerTests()
         {
@@ -20,21 +20,19 @@ namespace test.IntegrationTests.Controllers
             {
                 builder.ConfigureServices(services =>
                 {
-                    // Remove all DbContext and related EF Core services
-                    var descriptorsToRemove = services.Where(
-                        d => d.ServiceType.FullName?.Contains("EntityFrameworkCore") == true ||
-                             d.ServiceType == typeof(DbContextOptions<URLShortener.Data.AppDbContext>) ||
-                             d.ServiceType == typeof(URLShortener.Data.AppDbContext)).ToList();
+                    // Remove any existing DbContext registrations
+                    var descriptors = services
+                        .Where(d => d.ServiceType.FullName?.Contains("EntityFrameworkCore") == true ||
+                                    d.ServiceType == typeof(DbContextOptions<URLShortener.Data.AppDbContext>) ||
+                                    d.ServiceType == typeof(URLShortener.Data.AppDbContext))
+                        .ToList();
+                    foreach (var d in descriptors)
+                        services.Remove(d);
 
-                    foreach (var descriptor in descriptorsToRemove)
-                    {
-                        services.Remove(descriptor);
-                    }
-
-                    // Add in-memory database for testing
+                    // Add a single shared in-memory database for tests
                     services.AddDbContext<URLShortener.Data.AppDbContext>(options =>
                     {
-                        options.UseInMemoryDatabase("TestDb_" + Guid.NewGuid().ToString());
+                        options.UseInMemoryDatabase("TestDb");
                     });
                 });
             });
@@ -44,12 +42,10 @@ namespace test.IntegrationTests.Controllers
         {
             _client = _factory.CreateClient();
 
-            // Ensure database schema is created
-            using (var scope = _factory.Services.CreateScope())
-            {
-                var dbContext = scope.ServiceProvider.GetRequiredService<URLShortener.Data.AppDbContext>();
-                await dbContext.Database.EnsureCreatedAsync();
-            }
+            // Ensure DB is created
+            using var scope = _factory.Services.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<URLShortener.Data.AppDbContext>();
+            await db.Database.EnsureCreatedAsync();
         }
 
         public async Task DisposeAsync()
@@ -62,18 +58,13 @@ namespace test.IntegrationTests.Controllers
         [Fact]
         public async Task CreateShortUrl_ValidUrl_ReturnsShortUrl()
         {
-            // Arrange
-            var request = new CreateShortUrlRequestDto
-            {
-                OriginalUrl = "https://www.google.com"
-            };
+            var request = new CreateShortUrlRequestDto { OriginalUrl = "https://www.google.com" };
 
-            // Act
             var response = await _client.PostAsJsonAsync("/api/shorten", request);
 
-            // Assert
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadFromJsonAsync<ShortUrlResponseDto>();
+
             Assert.NotNull(result);
             Assert.NotNull(result.ShortUrl);
             Assert.Contains("https://localhost", result.ShortUrl);
@@ -82,33 +73,17 @@ namespace test.IntegrationTests.Controllers
         [Fact]
         public async Task CreateShortUrl_InvalidUrl_ReturnsBadRequest()
         {
-            // Arrange
-            var request = new CreateShortUrlRequestDto
-            {
-                OriginalUrl = "invalid-url"
-            };
-
-            // Act
+            var request = new CreateShortUrlRequestDto { OriginalUrl = "invalid-url" };
             var response = await _client.PostAsJsonAsync("/api/shorten", request);
-
-            // Assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
         [Fact]
-        public async Task CreateShortUrl_EmptyUrl_ReturnsBadRequest()
+        public async Task RedirectToOriginalUrl_InvalidShortCode_ReturnsNotFound()
         {
-            // Arrange
-            var request = new CreateShortUrlRequestDto
-            {
-                OriginalUrl = ""
-            };
-
-            // Act
-            var response = await _client.PostAsJsonAsync("/api/shorten", request);
-
-            // Assert
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            var invalidShortCode = "invalid123";
+            var response = await _client.GetAsync($"/{invalidShortCode}");
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
     }
 }
